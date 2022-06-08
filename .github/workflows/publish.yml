@@ -1,0 +1,30 @@
+name: Publish
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    step:
+      - uses: actions/checkout@v3
+
+      - uses: actions/checkout@v2
+      - name: Install latest nightly
+        uses: actions-rs/toolchain@v1
+        with:
+            toolchain: nightly
+            override: true
+      
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh 
+      
+      - name: Build wasm
+        run: wasm-pack build --target web --release --out-dir public
+      
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.PUBLISH_TOKEN }}
+          publish_dir: ./public
