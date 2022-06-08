@@ -23,7 +23,7 @@ jobs:
         run: wasm-pack build --target web --release --out-dir public
       
       - name: List public dir
-        run: ls public $$ ls .
+        run: ls public && ls .
       
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
