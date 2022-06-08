@@ -4,7 +4,7 @@
   </head>
   <body>
     <!-- Note the usage of `type=module` here as this is an ES6 module -->
-    <script type="module">
+    <script type="module" defer>
       // Use ES module import syntax to import functionality from the module
       // that we have compiled.
       import init, { ast } from './terbium_playground.js';
@@ -15,27 +15,23 @@
 
         // And afterwards we can use all the functionality defined in wasm.
         window.terbiumAst = ast;
+        
+        const input = document.getElementById('input');
+        const output = document.getElementById('output');
+        const ast = document.getElementById('ast');
+
+        ast.onclick = () => {
+            const text = input.value;
+            output.innerText = window.terbiumAst(text);
+        }
       }
       
-      window._runner = run();
+      run();
     </script>
 
     <input id="input" type="text">
     <button id="ast">Transform to AST</button>
 
     <p id="output">Output</p>
-    
-    <script>
-        window._runner.then(() => {
-          const input = document.getElementById('input');
-          const output = document.getElementById('output');
-          const ast = document.getElementById('ast');
-
-          ast.onclick = () => {
-              const text = input.value;
-              output.innerText = window.terbiumAst(text);
-          }
-        });
-    </script>
   </body>
 </html>
