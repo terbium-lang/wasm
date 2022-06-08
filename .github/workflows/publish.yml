@@ -29,7 +29,7 @@ jobs:
         run: ls public
       
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@ac45008
+        uses: peaceiris/actions-gh-pages@ac45008338dab8bf0c3efa91605acffc8565729c
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./public
