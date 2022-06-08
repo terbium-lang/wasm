@@ -22,8 +22,11 @@ jobs:
       - name: Build wasm
         run: wasm-pack build --target web --release --out-dir public
       
+      - name: Copy site to public
+        run: cp site/* public
+      
       - name: List public dir
-        run: ls public && ls .
+        run: ls public
       
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
