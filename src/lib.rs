@@ -1,5 +1,5 @@
-use wasm_bindgen::prelude::*;
 use terbium::{AstNode, AstParseInterface};
+use wasm_bindgen::prelude::*;
 
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
