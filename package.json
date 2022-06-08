@@ -1,0 +1,15 @@
+{
+  "name": "terbium_playground",
+  "collaborators": [
+    "Cryptex"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "terbium_playground_bg.wasm",
+    "terbium_playground.js",
+    "terbium_playground.d.ts"
+  ],
+  "module": "terbium_playground.js",
+  "types": "terbium_playground.d.ts",
+  "sideEffects": false
+}
