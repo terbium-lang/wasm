@@ -12,17 +12,14 @@
       async function run() {
         // First up we need to actually load the wasm file.
         await init();
-
-        // And afterwards we can use all the functionality defined in wasm.
-        window.terbiumAst = ast;
         
         const input = document.getElementById('input');
         const output = document.getElementById('output');
-        const ast = document.getElementById('ast');
+        const astC = document.getElementById('ast');
 
-        ast.onclick = () => {
+        astC.onclick = () => {
             const text = input.value;
-            output.innerText = window.terbiumAst(text);
+            output.innerText = ast(text);
         }
       }
       
