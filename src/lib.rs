@@ -1,6 +1,7 @@
 #![no_std]
 
 extern crate alloc;
+extern crate console_error_panic_hook;
 
 use alloc::format;
 use alloc::string::String;
@@ -13,6 +14,11 @@ use wasm_bindgen::prelude::*;
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+
+#[wasm_bindgen(start)]
+pub fn main() {
+    console_error_panic_hook::set_once();
+}
 
 #[wasm_bindgen]
 pub fn ast(content: String) -> JsValue {
