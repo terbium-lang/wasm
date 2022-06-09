@@ -7,7 +7,7 @@
     <script type="module" defer>
       // Use ES module import syntax to import functionality from the module
       // that we have compiled.
-      import init, { ast } from './terbium_playground.js';
+      import init, { ast, dis } from './terbium_playground.js';
 
       async function run() {
         // First up we need to actually load the wasm file.
@@ -16,10 +16,16 @@
         const input = document.getElementById('input');
         const output = document.getElementById('output');
         const astC = document.getElementById('ast');
+        const disC = document.getElementById('dis');
 
         astC.onclick = () => {
             const text = input.value;
             output.innerText = ast(text);
+        }
+
+        disC.onclick = () => {
+            const text = input.value;
+            output.innerText = dis(text);
         }
       }
       
@@ -28,6 +34,7 @@
 
     <input id="input" type="text">
     <button id="ast">Transform to AST</button>
+    <button id="dis">Disassemble to bytecode</button>
 
     <p id="output">Output</p>
   </body>
