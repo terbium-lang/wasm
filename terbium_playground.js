@@ -122,6 +122,17 @@ export function dis(code) {
     return takeObject(ret);
 }
 
+/**
+* @param {string} code
+* @returns {any}
+*/
+export function interpret(code) {
+    const ptr0 = passStringToWasm0(code, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.interpret(ptr0, len0);
+    return takeObject(ret);
+}
+
 async function load(module, imports) {
     if (typeof Response === 'function' && module instanceof Response) {
         if (typeof WebAssembly.instantiateStreaming === 'function') {

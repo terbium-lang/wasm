@@ -96,10 +96,6 @@
         color: #ffffff;
       }
       
-      .ace_line, .ace_active-line {
-        height: 18px; !important
-      }
-      
       #output * {
         font-family: 'JetBrains Mono', monospace;
         white-space: pre;
@@ -147,10 +143,12 @@
       <button id='dis'>
         Disassemble into Bytecode
       </button>
+      <button id='intr'>
+        Run code with interpreter
+      </button>
     </div>
     <div id="area">
-      <div id="editor">// Enter Terbium code here...
-</div>
+      <div id="editor">// Enter Terbium code here...</div>
       <div id="output">
         <code id="output-content">Output goes here...</code>
       </div>
@@ -158,7 +156,7 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.5.3/ace.js" type="text/javascript" charset="utf-8"></script>
     <script type="module">
-      import init, { ast, dis } from './terbium_playground.js';
+      import init, { ast, dis, intr } from './terbium_playground.js';
       
       async function run() {
         await init();
@@ -174,6 +172,7 @@
 
         const astC = document.getElementById('ast');
         const disC = document.getElementById('dis');
+        const intrC = document.getElementById('intr');
         const output = document.getElementById('output-content');
 
         astC.onclick = () => {
@@ -182,6 +181,10 @@
 
         disC.onclick = () => {
             output.innerText = dis(editor.getValue());
+        }
+
+        intrC.onclick = () => {
+            output.innerText = intr(editor.getValue());
         }
       }
       
