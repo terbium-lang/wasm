@@ -156,7 +156,7 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.5.3/ace.js" type="text/javascript" charset="utf-8"></script>
     <script type="module">
-      import init, { ast, dis, intr } from './terbium_playground.js';
+      import init, { ast, dis, interpret } from './terbium_playground.js';
       
       async function run() {
         await init();
@@ -184,7 +184,7 @@
         }
 
         intrC.onclick = () => {
-            output.innerText = intr(editor.getValue());
+            output.innerText = interpret(editor.getValue());
         }
       }
       
