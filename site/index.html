@@ -179,7 +179,7 @@
             try {
                 return f(...args);
             } catch (error) {
-                return error;
+                return error.message;
             }
         }
 
