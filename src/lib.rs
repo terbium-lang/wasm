@@ -27,7 +27,7 @@ pub fn ast(content: String) -> JsValue {
         return format!("{:#?}\nErrors: {:?}", node, errors).into();
     }
 
-    format!("{:?}", node).into()
+    format!("{:#?}", node).into()
 }
 
 #[wasm_bindgen]
