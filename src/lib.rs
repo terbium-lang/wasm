@@ -6,7 +6,7 @@ use alloc::format;
 use alloc::string::String;
 use alloc::vec::Vec;
 
-use terbium::{AstNode, AstParseInterface, AstBody, BcTransformer};
+use terbium::{AstNode, AstParseInterface, AstBody, BcTransformer, DefaultInterpreter};
 use wasm_bindgen::prelude::*;
 
 
@@ -55,4 +55,31 @@ pub fn dis(code: String) -> JsValue {
     }
 
     final_output.into()
+}
+
+#[wasm_bindgen]
+pub fn interpret(code: String) -> JsValue {
+    let (body, errors) = match AstBody::from_string(code) {
+        Ok(t) => t,
+        Err(e) => {
+            return e.iter().map(|e| format!("[{:?}]{}\n", e.span, e.message)).collect::<String>().into();
+        }
+    };
+
+    let mut transformer = BcTransformer::new();
+    transformer.interpret_body(None, body);
+
+    let mut program = transformer.program();
+    program.resolve();
+
+    let mut interpreter = DefaultInterpreter::new();
+    interpreter.run_bytecode(program);
+    
+    let final_input = format!("{:?}", interpreter.stack().pop());
+
+    if !errors.is_empty() {
+        return format!("{:?}\nErrors: {:?}", final_input, errors).into();
+    }
+
+    final_input.into()
 }
