@@ -24,7 +24,7 @@ pub fn ast(content: String) -> JsValue {
     };
 
     if !errors.is_empty() {
-        return format!("{:?}\nErrors: {:?}", node, errors).into();
+        return format!("{:#?}\nErrors: {:?}", node, errors).into();
     }
 
     format!("{:?}", node).into()
