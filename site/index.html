@@ -175,16 +175,24 @@
         const intrC = document.getElementById('intr');
         const output = document.getElementById('output-content');
 
+        const handle_error = (f, ...args) => {
+            try {
+                return f(...args);
+            } catch (error) {
+                return error;
+            }
+        }
+
         astC.onclick = () => {
-            output.innerText = ast(editor.getValue());
+            output.innerText = handle_error(ast, editor.getValue());
         }
 
         disC.onclick = () => {
-            output.innerText = dis(editor.getValue());
+            output.innerText = handle_error(dis, editor.getValue());
         }
 
         intrC.onclick = () => {
-            output.innerText = interpret(editor.getValue());
+            output.innerText = handle_error(interpret, editor.getValue());
         }
       }
       
