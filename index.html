@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 
-<html>
+<!-- <html>
   <head>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
   </head>
   <body>
-    <!-- Note the usage of `type=module` here as this is an ES6 module -->
     <script type="module" defer>
       // Use ES module import syntax to import functionality from the module
       // that we have compiled.
@@ -40,4 +39,155 @@
 
     <p id="output">Output</p>
   </body>
+</html> -->
+
+<html>
+  <head>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=JetBrains+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+    
+      body {
+        margin: 0;
+        background-color: #1f1f1f;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+      }
+      
+      h1 {
+        margin-bottom: 4px;
+      }
+      
+      * {
+        font-family: 'Inter', sans-serif;
+      }
+      
+      h1, p {
+        color: #ffffff;
+      }
+      
+      #start {
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+      }
+    
+      #area {
+        display: flex;
+        width: min(1200px, 90vw);
+        margin: 6px;
+        margin-bottom: 6px;
+        height: calc(100vh - 176px);
+      }
+    
+      #editor { 
+        width: min(70vw, 721px);
+        height: 100%;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+      
+      #editor * {
+        font-family: 'JetBrains Mono', monospace;
+      }
+      
+      #output * {
+        color: #ffffff;
+      }
+      
+      .ace_line, .ace_active-line {
+        height: 18px; !important
+      }
+      
+      #output * {
+        font-family: 'JetBrains Mono', monospace;
+        white-space: pre;
+      }
+      
+      #output {
+        padding: 0 16px;
+      }
+      
+      #buttons {
+        display: flex;
+      }
+      
+      #buttons button {
+        margin: 6px;
+        padding: 8px;
+        border: none;
+        color: #ffffff;
+        background-color: #2a9c44;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+      
+      #buttons button:hover {
+        background-color: #29c24c;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="start">
+      <h1>
+        Terbium Playground
+      </h1>
+      <p>
+        Play around with Terbium code
+      </p>
+    </div>
+    
+    <div id="buttons">
+      <button id='ast'>
+        View AST
+      </button>
+      <button id='dis'>
+        Disassemble into Bytecode
+      </button>
+    </div>
+    <div id="area">
+      <div id="editor">// Enter Terbium code here...
+</div>
+      <div id="output">
+        <code id="output-content">Output goes here...</code>
+      </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.5.3/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script type="module">
+      import init, { ast, dis } from './terbium_playground.js';
+      
+      async function run() {
+        await init();
+
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/dracula");
+
+        editor.session.setOptions({ tabSize: 4, useSoftTabs: true });
+        editor.setBehavioursEnabled(true);
+
+        editor.container.style.lineHeight = 1.5
+        editor.renderer.updateFontSize();
+
+        const astC = document.getElementById('ast');
+        const disC = document.getElementById('dis');
+        const output = document.getElementById('output-content');
+
+        astC.onclick = () => {
+            output.innerText = ast(editor.getValue());
+        }
+
+        disC.onclick = () => {
+            output.innerText = dis(editor.getValue());
+        }
+      }
+      
+      run();
+    </script>
+    
+  </body>
 </html>
+
