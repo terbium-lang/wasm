@@ -4,12 +4,11 @@ extern crate alloc;
 extern crate console_error_panic_hook;
 
 use alloc::format;
-use alloc::string::String;
+use alloc::string::{String, ToString};
 use alloc::vec::Vec;
 
-use terbium::{AstNode, AstParseInterface, AstBody, BcTransformer, DefaultInterpreter};
+use terbium::{AstNode, AstParseInterface, AstBody, BcTransformer, DefaultInterpreter, TerbiumObject};
 use wasm_bindgen::prelude::*;
-
 
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
@@ -80,12 +79,18 @@ pub fn interpret(code: String) -> JsValue {
 
     let mut interpreter = DefaultInterpreter::new();
     interpreter.run_bytecode(program);
-    
-    let final_input = format!("{:?}", interpreter.stack().pop());
+
+    let output = match interpreter.stack().pop() {
+        TerbiumObject::Integer(n) => n.to_string(),
+        TerbiumObject::Float(f) => f.0.to_string(),
+        TerbiumObject::String(s_id) => format!("\"{}\"", interpreter.string_lookup(s_id)),
+        TerbiumObject::Bool(b) => b.to_string(),
+        TerbiumObject::Null => "null".to_string(),
+    };
 
     if !errors.is_empty() {
-        return format!("{:?}\nErrors: {:?}", final_input, errors).into();
+        return format!("{:?}\nErrors: {:?}", output, errors).into();
     }
 
-    final_input.into()
+    output.into()
 }
