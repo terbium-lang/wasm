@@ -1,7 +1,6 @@
 #![no_std]
 
 extern crate alloc;
-extern crate console_error_panic_hook;
 
 use alloc::format;
 use alloc::string::{String, ToString};
@@ -13,11 +12,6 @@ use wasm_bindgen::prelude::*;
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
-
-#[wasm_bindgen(start)]
-pub fn main() {
-    console_error_panic_hook::set_once();
-}
 
 #[wasm_bindgen]
 pub fn ast(content: String) -> JsValue {
@@ -83,7 +77,7 @@ pub fn interpret(code: String) -> JsValue {
     let output = match interpreter.stack().pop() {
         TerbiumObject::Integer(n) => n.to_string(),
         TerbiumObject::Float(f) => f.0.to_string(),
-        TerbiumObject::String(s_id) => format!("\"{}\"", interpreter.string_lookup(s_id)),
+        TerbiumObject::String(s_id) => format!("{:?}", interpreter.string_lookup(s_id)),
         TerbiumObject::Bool(b) => b.to_string(),
         TerbiumObject::Null => "null".to_string(),
     };
