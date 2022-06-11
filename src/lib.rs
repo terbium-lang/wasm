@@ -1,11 +1,3 @@
-// #![no_std]
-
-// extern crate alloc;
-
-// use alloc::format;
-// use alloc::string::{String, ToString};
-// use alloc::vec::Vec;
-
 use terbium::{AstNode, AstParseInterface, AstBody, BcTransformer, DefaultInterpreter, TerbiumObject};
 use wasm_bindgen::prelude::*;
 
