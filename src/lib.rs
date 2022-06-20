@@ -66,13 +66,9 @@ pub fn interpret(code: String) -> JsValue {
     let mut interpreter = DefaultInterpreter::new();
     interpreter.run_bytecode(program);
 
-    let output = match interpreter.stack().pop() {
-        TerbiumObject::Integer(n) => n.to_string(),
-        TerbiumObject::Float(f) => f.0.to_string(),
-        TerbiumObject::String(s_id) => format!("{:?}", interpreter.string_lookup(s_id)),
-        TerbiumObject::Bool(b) => b.to_string(),
-        TerbiumObject::Null => "null".to_string(),
-    };
+    let popped = interpreter.ctx.pop_ref();
+    let popped = interpreter.ctx.store.resolve(popped);
+    let output = interpreter.get_object_repr(popped);
 
     if !errors.is_empty() {
         return format!("{:?}\nErrors: {:?}", output, errors).into();

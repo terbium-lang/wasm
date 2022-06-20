@@ -3,6 +3,12 @@ name: Publish
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: 'Terbium Commit SHA'
+        required: true
+        type: string
 
 jobs:
   deploy:
@@ -39,7 +45,15 @@ jobs:
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.ref == 'refs/heads/main' }}
+        if: ${{ github.ref == 'refs/heads/main' && !inputs.commit }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: build
+      
+      - name: 'Deploy: Terbium Update'
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/main' && inputs.commit }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build
+          commit: 'Rebuild for Terbium commit: ${{ inputs.commit }}'
