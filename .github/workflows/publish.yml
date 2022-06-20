@@ -4,11 +4,6 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-    inputs:
-      commit:
-        description: 'Terbium Commit SHA'
-        required: true
-        type: string
 
 jobs:
   deploy:
@@ -25,6 +20,12 @@ jobs:
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh 
       
+      - name: Terbium commit hash
+        uses: mathiasvr/command-output@v1
+        id: terbium_commit
+        with:
+          run: git ls-remote https://github.com/TerbiumLang/Terbium HEAD | awk '{ print $1}'
+
       - name: Build wasm
         run: wasm-pack build --target web --release
     
@@ -45,15 +46,8 @@ jobs:
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.ref == 'refs/heads/main' && !inputs.commit }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: build
-      
-      - name: 'Deploy: Terbium Update'
-        uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.ref == 'refs/heads/main' && inputs.commit }}
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: build
-          commit_message: 'Rebuild for Terbium commit: ${{ inputs.commit }}'
+          commit_message: "Deploy: Terbium Commit: ${ steps.terbium_commit.outputs.stdout }} Repo Commit:"
