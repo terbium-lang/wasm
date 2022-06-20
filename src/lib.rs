@@ -1,4 +1,4 @@
-use terbium::{AstNode, AstParseInterface, AstBody, BcTransformer, DefaultInterpreter, TerbiumObject};
+use terbium::{AstNode, AstParseInterface, AstBody, BcTransformer, DefaultInterpreter};
 use wasm_bindgen::prelude::*;
 
 #[cfg(feature = "wee_alloc")]
@@ -42,7 +42,7 @@ pub fn dis(code: String) -> JsValue {
     let final_output = String::from_utf8(output).unwrap();
 
     if !errors.is_empty() {
-        return format!("{:?}\nErrors: {:?}", final_output, errors).into();
+        return format!("{}\nErrors: {:?}", final_output, errors).into();
     }
 
     final_output.into()
@@ -71,7 +71,7 @@ pub fn interpret(code: String) -> JsValue {
     let output = interpreter.get_object_repr(popped);
 
     if !errors.is_empty() {
-        return format!("{:?}\nErrors: {:?}", output, errors).into();
+        return format!("{}\nErrors: {:?}", output, errors).into();
     }
 
     output.into()
