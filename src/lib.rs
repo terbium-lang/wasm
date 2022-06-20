@@ -1,4 +1,4 @@
-use terbium::{AstBody, AstNode, AstParseInterface, BcTransformer, DefaultInterpreter, BcProgram};
+use terbium::{AstBody, AstNode, AstParseInterface, BcTransformer, DefaultInterpreter};
 use wasm_bindgen::prelude::*;
 
 #[cfg(feature = "wee_alloc")]
@@ -57,12 +57,12 @@ macro_rules! program {
     ($body:ident) => {{
         let mut transformer = BcTransformer::new();
         transformer.interpret_body(None, $body);
-    
+
         let mut program = transformer.program();
         program.resolve();
 
         program
-    }}
+    }};
 }
 
 #[must_use]
