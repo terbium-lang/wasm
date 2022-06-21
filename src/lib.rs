@@ -94,7 +94,7 @@ pub fn interpret(code: String) -> JsValue {
     let program = program!(body);
 
     let mut interpreter = DefaultInterpreter::default();
-    interpreter.run_bytecode(program);
+    interpreter.run_bytecode(&program);
 
     let popped = interpreter.ctx.pop_ref();
     let popped = interpreter.ctx.store.resolve(popped);
