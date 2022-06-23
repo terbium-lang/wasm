@@ -23,7 +23,7 @@ macro_rules! ast {
 
 macro_rules! program {
     ($body:ident) => {{
-        let mut transformer = BcTransformer::new();
+        let mut transformer = BcTransformer::default();
         transformer.interpret_body(None, $body);
 
         let mut program = transformer.program();
@@ -59,7 +59,7 @@ pub fn interpret(code: String) -> JsValue {
     let body = ast!(code, AstBody);
     let program = program!(body);
 
-    let mut interpreter = DefaultInterpreter::new();
+    let mut interpreter = DefaultInterpreter::default();
     interpreter.run_bytecode(&program);
 
     let popped = interpreter.ctx.pop_ref();
