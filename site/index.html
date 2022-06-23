@@ -176,18 +176,24 @@
         const astC = document.getElementById('ast');
         const disC = document.getElementById('dis');
         const intrC = document.getElementById('intr');
-        const output = document.getElementById('output-content');
+        const output = document.getElementById('output');
 
         const handle_error = (f, ...args) => {
             try {
-                return filter.toHtml(f(...args));
+                const [result, error] = f(...args);
+                if (result !== null) {
+                  output.innerHTML = `<code>${result}</code>`;
+                }
+                if (error !== null) {
+                  output.innerhtml = filter.toHtml(error);
+                }
             } catch (error) {
-                return error.message;
+                return output.innerHTML = `<code>${error.message}</code>`;
             }
         }
 
         astC.onclick = () => {
-            output.innerHtml = handle_error(ast, editor.getValue());
+            outpute = handle_error(ast, editor.getValue());
         }
 
         disC.onclick = () => {

@@ -1,7 +1,12 @@
+//! Terbium Playground
+//! Returns: [result: String / null, ANSI Error: String / null]
+
 use terbium::grammar::{ParseInterface, Source};
 use terbium::sources;
 use terbium::{AstBody, AstNode, BcProgram, BcTransformer, DefaultInterpreter};
 use wasm_bindgen::prelude::*;
+
+const NULL: JsValue = JsValue::NULL;
 
 #[cfg(feature = "wee_alloc")]
 #[global_allocator]
@@ -40,22 +45,22 @@ fn program(body: AstBody) -> BcProgram {
 
 #[must_use]
 #[wasm_bindgen]
-pub fn ast(content: &str) -> JsValue {
+pub fn ast(content: &str) -> Vec<JsValue> {
     let node = parse_ast::<AstNode>(content);
     if let Err(e) = node {
-        return e.into();
+        return vec![NULL, e.into()];
     }
 
     // SAFETY: `node` is not Err because is already checked.
-    format!("{:#?}", unsafe { node.unwrap_unchecked() }).into()
+    vec![format!("{:#?}", unsafe { node.unwrap_unchecked() }).into(), NULL]
 }
 
 #[must_use]
 #[wasm_bindgen]
-pub fn dis(code: &str) -> JsValue {
+pub fn dis(code: &str) -> Vec<JsValue> {
     let body = parse_ast::<AstBody>(code);
     if let Err(e) = body {
-        return e.into();
+        return vec![NULL, e.into()];
     }
 
     // SAFETY: `body` is not Err because is already checked.
@@ -64,17 +69,17 @@ pub fn dis(code: &str) -> JsValue {
     let mut output = Vec::new();
     drop(program.dis(&mut output));
 
-    String::from_utf8(output)
+    vec![String::from_utf8(output)
         .unwrap_or_else(|_| unreachable!())
-        .into()
+        .into(), NULL]
 }
 
 #[must_use]
 #[wasm_bindgen]
-pub fn interpret(code: &str) -> JsValue {
+pub fn interpret(code: &str) -> Vec<JsValue> {
     let body = parse_ast(code);
     if let Err(e) = body {
-        return e.into();
+        return vec![NULL, e.into()];
     }
 
     // SAFETY: `body` is not Err because is already checked.
@@ -86,5 +91,5 @@ pub fn interpret(code: &str) -> JsValue {
     let popped = interpreter.ctx.pop_ref();
     let popped = interpreter.ctx.store.resolve(popped);
 
-    interpreter.get_object_repr(popped).into()
+    vec![interpreter.get_object_repr(popped).into(), NULL]
 }
