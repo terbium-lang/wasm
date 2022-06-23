@@ -16,7 +16,7 @@ jobs:
         with:
             toolchain: nightly
             override: true
-      
+
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh 
       
@@ -25,6 +25,9 @@ jobs:
         id: terbium_commit
         with:
           run: git ls-remote https://github.com/TerbiumLang/Terbium HEAD | awk '{ print $1}'
+
+      - name: Setup cache
+        uses: Swatinem/rust-cache@v1
 
       - name: Build wasm
         run: wasm-pack build --target web --release

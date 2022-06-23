@@ -156,7 +156,7 @@
     </div>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.5.3/ace.js" type="text/javascript" charset="utf-8"></script>
-    <script src="https://cdn.jsdelivr.net/npm/ansi-to-html@0.7.2/lib/ansi_to_html.min.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/ansi-to-html@0.7.2/lib/ansi_to_html.min.js"></script>
     <script type="module">
       import init, { ast, dis, interpret } from './terbium_playground.js';
       
@@ -187,15 +187,15 @@
         }
 
         astC.onclick = () => {
-            output.innerText = handle_error(ast, editor.getValue());
+            output.innerHtml = handle_error(ast, editor.getValue());
         }
 
         disC.onclick = () => {
-            output.innerText = handle_error(dis, editor.getValue());
+            output.innerHtml = handle_error(dis, editor.getValue());
         }
 
         intrC.onclick = () => {
-            output.innerText = handle_error(interpret, editor.getValue());
+            output.innerHtml = handle_error(interpret, editor.getValue());
         }
       }
       
