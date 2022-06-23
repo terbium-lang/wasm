@@ -2,29 +2,31 @@
 /* eslint-disable */
 /**
 * @param {string} content
-* @returns {any}
+* @returns {any[]}
 */
-export function ast(content: string): any;
+export function ast(content: string): any[];
 /**
 * @param {string} code
-* @returns {any}
+* @returns {any[]}
 */
-export function dis(code: string): any;
+export function dis(code: string): any[];
 /**
 * @param {string} code
-* @returns {any}
+* @returns {any[]}
 */
-export function interpret(code: string): any;
+export function interpret(code: string): any[];
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly ast: (a: number, b: number) => number;
-  readonly dis: (a: number, b: number) => number;
-  readonly interpret: (a: number, b: number) => number;
+  readonly ast: (a: number, b: number, c: number) => void;
+  readonly dis: (a: number, b: number, c: number) => void;
+  readonly interpret: (a: number, b: number, c: number) => void;
+  readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
   readonly __wbindgen_malloc: (a: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number) => number;
+  readonly __wbindgen_free: (a: number, b: number) => void;
 }
 
 /**
