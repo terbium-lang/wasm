@@ -186,23 +186,23 @@
                   output.innerHTML = `<code>${result}</code>`;
                 }
                 if (error !== null) {
-                  output.innerhtml = filter.toHtml(error);
+                  output.innerHTML = filter.toHtml(error);
                 }
             } catch (error) {
-                return output.innerHTML = `<code>${error.message}</code>`;
+                output.innerHTML = `<code>${error.message}</code>`;
             }
         }
 
         astC.onclick = () => {
-            outpute = handle_error(ast, editor.getValue());
+            handle_error(ast, editor.getValue());
         }
 
         disC.onclick = () => {
-            output.innerHtml = handle_error(dis, editor.getValue());
+            handle_error(dis, editor.getValue());
         }
 
         intrC.onclick = () => {
-            output.innerHtml = handle_error(interpret, editor.getValue());
+            handle_error(interpret, editor.getValue());
         }
       }
       
