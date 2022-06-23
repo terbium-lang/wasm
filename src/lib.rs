@@ -16,6 +16,7 @@ fn parse_ast<T>(content: &str) -> Result<T, String>
 where
     T: ParseInterface,
 {
+    console_error_panic_hook::set_once();
     let source = Source::default();
 
     let res = T::from_string(source.clone(), content.to_string());
