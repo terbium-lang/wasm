@@ -27,7 +27,10 @@ where
 
             error.write(cache, &mut err);
         }
-        return Err(String::from_utf8_lossy(&err).into_owned());
+        return Err(
+            ansi_to_html::convert(&String::from_utf8_lossy(&err), true, false)
+                .unwrap_or_else(|_| "Failed to parse ANSI to HTML".to_string()),
+        );
     }
     // SAFETY: `res` is not Err because is already checked
     Ok(unsafe { res.unwrap_unchecked() })
