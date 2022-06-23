@@ -181,6 +181,7 @@
         const handle_error = (f, ...args) => {
             try {
                 const [result, error] = f(...args);
+
                 if (result !== null) {
                   output.innerHTML = `<code>${result}</code>`;
                 }

@@ -52,7 +52,10 @@ pub fn ast(content: &str) -> Vec<JsValue> {
     }
 
     // SAFETY: `node` is not Err because is already checked.
-    vec![format!("{:#?}", unsafe { node.unwrap_unchecked() }).into(), NULL]
+    vec![
+        format!("{:#?}", unsafe { node.unwrap_unchecked() }).into(),
+        NULL,
+    ]
 }
 
 #[must_use]
@@ -69,9 +72,12 @@ pub fn dis(code: &str) -> Vec<JsValue> {
     let mut output = Vec::new();
     drop(program.dis(&mut output));
 
-    vec![String::from_utf8(output)
-        .unwrap_or_else(|_| unreachable!())
-        .into(), NULL]
+    vec![
+        String::from_utf8(output)
+            .unwrap_or_else(|_| unreachable!())
+            .into(),
+        NULL,
+    ]
 }
 
 #[must_use]
