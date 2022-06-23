@@ -172,8 +172,7 @@
         editor.container.style.lineHeight = 1.5
         editor.renderer.updateFontSize();
 
-        const Convert = require('ansi-to-html');
-        const convert = new Convert();
+        const filter = new Filter();
         const astC = document.getElementById('ast');
         const disC = document.getElementById('dis');
         const intrC = document.getElementById('intr');
@@ -181,7 +180,7 @@
 
         const handle_error = (f, ...args) => {
             try {
-                return convert.toHtml(f(...args));
+                return filter.toHtml(f(...args));
             } catch (error) {
                 return error.message;
             }
