@@ -156,6 +156,7 @@
     </div>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.5.3/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ansi-to-html@0.7.2/lib/ansi_to_html.min.js"></script>
     <script type="module">
       import init, { ast, dis, interpret } from './terbium_playground.js';
       
@@ -171,6 +172,7 @@
         editor.container.style.lineHeight = 1.5
         editor.renderer.updateFontSize();
 
+        const filter = new Filter();
         const astC = document.getElementById('ast');
         const disC = document.getElementById('dis');
         const intrC = document.getElementById('intr');
@@ -184,7 +186,7 @@
                   output.innerHTML = `<code>${result}</code>`;
                 }
                 if (error !== null) {
-                  output.innerHTML = error;
+                  output.innerHTML = filter.toHtml(error);
                 }
             } catch (error) {
                 output.innerHTML = `<code>${error.message}</code>`;
