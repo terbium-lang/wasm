@@ -29,7 +29,7 @@ where
             error.write(cache, &mut err);
         }
         return Err(
-            ansi_to_html::convert(&String::from_utf8_lossy(&err), true, true)
+            ansi_to_html::convert(&String::from_utf8_lossy(&err), false, true)
                 .unwrap_or_else(|_| "Failed to parse ANSI to HTML".to_string()),
         );
     }
