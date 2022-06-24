@@ -93,17 +93,18 @@
       }
       
       #output * {
-        color: #ffffff;
+        color: #ffffff !important;
       }
       
       #output * {
-        font-family: 'JetBrains Mono', monospace;
-        white-space: pre;
+        font-family: 'JetBrains Mono', monospace !important;
+        white-space: pre !important;
       }
       
       #output {
         padding: 0 16px;
         overflow: auto;
+        color: #ffffff !important;
       }
       
       #buttons {
@@ -172,12 +173,21 @@
         editor.container.style.lineHeight = 1.5
         editor.renderer.updateFontSize();
 
-        const filter = new Filter();
+        const filter = new Filter({colors: {1: "#F00"}});
         const astC = document.getElementById('ast');
         const disC = document.getElementById('dis');
         const intrC = document.getElementById('intr');
         const output = document.getElementById('output');
 
+        function escapeHtml(unsafe) {
+            return unsafe
+                 .replace(/&/g, "&amp;")
+                 .replace(/</g, "&lt;")
+                 .replace(/>/g, "&gt;")
+                 .replace(/"/g, "&quot;")
+                 .replace(/'/g, "&#039;");
+         }
+        
         const handle_error = (f, ...args) => {
             try {
                 const [result, error] = f(...args);
@@ -186,7 +196,7 @@
                   output.innerHTML = `<code>${result}</code>`;
                 }
                 if (error !== null) {
-                  output.innerHTML = filter.toHtml(error);
+                  output.innerHTML = filter.toHtml(escapeHtml(error));
                 }
             } catch (error) {
                 output.innerHTML = `<code>${error.message}</code>`;
