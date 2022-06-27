@@ -100,6 +100,10 @@ where
         return Err(unsafe { result.unwrap_unchecked() });
     }
 
+    if tokens.is_empty() {
+        return Err("Expected input".to_string());
+    }
+
     // SAFETY: Analyzer already checked for us so is safe to unwrap.
     Ok((unsafe { T::parse(tokens).unwrap_unchecked() }, result))
 }
@@ -183,7 +187,7 @@ pub fn interpret(code: &str) -> Vec<JsValue> {
         if let Some(warnings) = warnings {
             return vec![NULL, warnings.into()];
         } else {
-        return vec![false.into(), NULL];
+            return vec![false.into(), NULL];
         }
     }
 
