@@ -193,10 +193,16 @@
                 const [result, error] = f(...args);
 
                 if (result !== null) {
+                  if (error !== null) {
+                    output.innerHTML += filter.toHtml(escapeHtml(error));
+                  }
+                  output.innerHTML += '<br/>'
+
                   output.innerHTML = `<code>${result}</code>`;
-                }
-                if (error !== null) {
-                  output.innerHTML = filter.toHtml(escapeHtml(error));
+                } else {
+                  if (error !== null) {
+                    output.innerHTML = filter.toHtml(escapeHtml(error));
+                  }
                 }
             } catch (error) {
                 output.innerHTML = `<code>${error.message}</code>`;

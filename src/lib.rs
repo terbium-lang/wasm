@@ -1,8 +1,9 @@
 //! Terbium Playground
 //! Returns: [result: String / null, ANSI Error: String / null]
 
-use terbium::grammar::{ParseInterface, Source};
-use terbium::sources;
+use terbium::analyzer::{run_analysis, AnalyzerMessageKind, AnalyzerSet, Context};
+use terbium::grammar::{ParseInterface, Source, Span};
+use terbium::{sources, AstToken};
 use terbium::{AstBody, AstNode, BcProgram, BcTransformer, DefaultInterpreter};
 use wasm_bindgen::prelude::*;
 
@@ -34,6 +35,73 @@ where
     Ok(unsafe { res.unwrap_unchecked() })
 }
 
+fn analyze<T>(code: &str) -> Result<(T, Option<String>), String>
+where
+    T: ParseInterface,
+{
+    let tokens = parse_ast::<Vec<(AstToken, Span)>>(code)?;
+
+    let src = vec![(Source::default(), code.to_string())];
+    let ctx = Context::from_tokens(src.clone(), tokens.clone());
+    let analyzers = AnalyzerSet::default();
+
+    let messages = run_analysis(&analyzers, ctx)?;
+
+    let mut should_return = false;
+    let count = messages.len();
+    let mut info_count = 0;
+    let mut warning_count = 0;
+    let mut error_count = 0;
+
+    let mut final_message = Vec::new();
+
+    for message in messages {
+        match message.kind {
+            AnalyzerMessageKind::Info => info_count += 1,
+            AnalyzerMessageKind::Alert(k) => {
+                if k.is_error() {
+                    error_count += 1;
+                    should_return = true;
+                } else {
+                    warning_count += 1;
+                }
+            }
+        }
+
+        message.write(sources(src.clone()), &mut final_message);
+    }
+
+    let result = {
+        if !final_message.is_empty() {
+            let mut result = String::from_utf8_lossy(&final_message).into_owned();
+
+            result.push_str(&format!(
+                "{} message{} ({} info, {} warning{}, {} error{})\n",
+                count,
+                if count == 1 { "" } else { "s" },
+                info_count,
+                warning_count,
+                if warning_count == 1 { "" } else { "s" },
+                error_count,
+                if error_count == 1 { "" } else { "s" }
+            ));
+
+            Some(result)
+        } else {
+            None
+        }
+    };
+
+    if should_return {
+        // SAFETY: `should_return` is only `true` if there is an error,
+        // that mean there has to be at least one item.
+        return Err(unsafe { result.unwrap_unchecked() });
+    }
+
+    // SAFETY: Analyzer already checked for us so is safe to unwrap.
+    Ok((unsafe { T::parse(tokens).unwrap_unchecked() }, result))
+}
+
 fn program(body: AstBody) -> BcProgram {
     let mut transformer = BcTransformer::default();
     transformer.interpret_body(None, body);
@@ -47,28 +115,36 @@ fn program(body: AstBody) -> BcProgram {
 #[must_use]
 #[wasm_bindgen]
 pub fn ast(content: &str) -> Vec<JsValue> {
-    let node = parse_ast::<AstNode>(content);
-    if let Err(e) = node {
+    let result = analyze::<AstNode>(content);
+    if let Err(e) = result {
         return vec![NULL, e.into()];
     }
 
     // SAFETY: `node` is not Err because is already checked.
+    let (node, warnings) = unsafe { result.unwrap_unchecked() };
+
     vec![
-        format!("{:#?}", unsafe { node.unwrap_unchecked() }).into(),
-        NULL,
+        format!("{:#?}", node).into(),
+        if let Some(warnings) = warnings {
+            warnings.into()
+        } else {
+            NULL
+        },
     ]
 }
 
 #[must_use]
 #[wasm_bindgen]
 pub fn dis(code: &str) -> Vec<JsValue> {
-    let body = parse_ast::<AstBody>(code);
-    if let Err(e) = body {
+    let result = analyze::<AstBody>(code);
+    if let Err(e) = result {
         return vec![NULL, e.into()];
     }
 
-    // SAFETY: `body` is not Err because is already checked.
-    let program = program(unsafe { body.unwrap_unchecked() });
+    // SAFETY: `node` is not Err because is already checked.
+    let (body, warnings) = unsafe { result.unwrap_unchecked() };
+
+    let program = program(body);
 
     let mut output = Vec::new();
     drop(program.dis(&mut output));
@@ -77,20 +153,26 @@ pub fn dis(code: &str) -> Vec<JsValue> {
         String::from_utf8(output)
             .unwrap_or_else(|_| unreachable!())
             .into(),
-        NULL,
+        if let Some(warnings) = warnings {
+            warnings.into()
+        } else {
+            NULL
+        },
     ]
 }
 
 #[must_use]
 #[wasm_bindgen]
 pub fn interpret(code: &str) -> Vec<JsValue> {
-    let body = parse_ast(code);
-    if let Err(e) = body {
+    let result = analyze::<AstBody>(code);
+    if let Err(e) = result {
         return vec![NULL, e.into()];
     }
 
-    // SAFETY: `body` is not Err because is already checked.
-    let program = program(unsafe { body.unwrap_unchecked() });
+    // SAFETY: `node` is not Err because is already checked.
+    let (body, warnings) = unsafe { result.unwrap_unchecked() };
+
+    let program = program(body);
 
     let mut interpreter = DefaultInterpreter::default();
     interpreter.run_bytecode(&program);
@@ -98,5 +180,12 @@ pub fn interpret(code: &str) -> Vec<JsValue> {
     let popped = interpreter.ctx.pop_ref();
     let popped = interpreter.ctx.store.resolve(popped);
 
-    vec![interpreter.get_object_repr(popped).into(), NULL]
+    vec![
+        interpreter.get_object_repr(popped).into(),
+        if let Some(warnings) = warnings {
+            warnings.into()
+        } else {
+            NULL
+        },
+    ]
 }
