@@ -76,14 +76,13 @@
       #area {
         display: flex;
         width: min(1200px, 90vw);
-        margin: 6px;
-        margin-bottom: 6px;
+        margin: 12px 6px;
         height: calc(90vh - 176px);
+        flex-direction: column;
       }
     
       #editor { 
-        width: min(70vw, 721px);
-        height: 100%;
+        flex-grow: 1;
         border-radius: 4px;
         font-size: 14px;
       }
@@ -102,9 +101,15 @@
       }
       
       #output {
-        padding: 0 16px;
+        padding: 16px;
         overflow: auto;
         color: #ffffff;
+        font-family: 'JetBrains Mono', monospace !important;
+        height: 40%;
+      }
+      
+      #output a {
+        color: #00aaff;
       }
       
       #buttons {
@@ -177,15 +182,35 @@
         const disC = document.getElementById('dis');
         const intrC = document.getElementById('intr');
         const output = document.getElementById('output');
-        const filter = new Filter({newline: true});
+        const filter = new Filter({newline: true, colors: {
+            0: '#000',
+            1: '#F22',
+            2: '#0F0',
+            3: '#FA0',
+            4: '#00F',
+            5: '#F0F',
+            6: '#0FF',
+            7: '#FFF',
+            8: '#AAA',
+            9: '#FAA',
+            10: '#AFA',
+            11: '#FFA',
+            12: '#AAF',
+            13: '#FAF',
+            14: '#AFF',
+            15: '#FFF'
+        }});
 
+        const r = /https:\/\/github.com\/TerbiumLang\/standard\/blob\/main\/error_index\.md#([EWew]\d+)(?![\s\S]*https:\/\/github.com\/TerbiumLang\/standard\/blob\/main\/error_index\.md#[EWew]\d+)/g;
+        
         function escapeHtml(unsafe) {
             return unsafe
                  .replace(/&/g, "&amp;")
                  .replace(/</g, "&lt;")
                  .replace(/>/g, "&gt;")
                  .replace(/"/g, "&quot;")
-                 .replace(/'/g, "&#039;");
+                 .replace(/'/g, "&#039;")
+                 .replace(r, '<a class="errindex" href="$&">Click to view $1</a>');
          }
         
         const handle_error = (f, ...args) => {
@@ -194,7 +219,7 @@
 
                 if (result !== null) {
                   if (error !== null) {
-                    output.innerHTML += filter.toHtml(escapeHtml(error));
+                    output.innerHTML += filter.toHtml(escapeHtml(error)).replace(/(<\/span>|<br *\/>)( +?)(<span)/gm, '$1<span>$2</span>$3');
                   }
                   
                   if (result === false) {
@@ -206,7 +231,7 @@
                   output.innerHTML = `<code>${result}</code>`;
                 } else {
                   if (error !== null) {
-                    output.innerHTML = filter.toHtml(escapeHtml(error));
+                    output.innerHTML = filter.toHtml(escapeHtml(error)).replace(/(<\/span>|<br *\/>)( +?)(<span)/gm, '$1<span>$2</span>$3');
                   }
                 }
             } catch (error) {
