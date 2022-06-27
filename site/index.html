@@ -196,6 +196,11 @@
                   if (error !== null) {
                     output.innerHTML += filter.toHtml(escapeHtml(error));
                   }
+                  
+                  if (result === false) {
+                    return;
+                  }
+
                   output.innerHTML += '<br/>'
 
                   output.innerHTML = `<code>${result}</code>`;

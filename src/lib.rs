@@ -1,6 +1,8 @@
 //! Terbium Playground
 //! Returns: [result: String / null, ANSI Error: String / null]
 
+#![feature(let_chains)]
+
 use terbium::analyzer::{run_analysis, AnalyzerMessageKind, AnalyzerSet, Context};
 use terbium::grammar::{ParseInterface, Source, Span};
 use terbium::{sources, AstToken};
@@ -176,6 +178,14 @@ pub fn interpret(code: &str) -> Vec<JsValue> {
 
     let mut interpreter = DefaultInterpreter::default();
     interpreter.run_bytecode(&program);
+
+    if interpreter.ctx.stack_is_empty() {
+        if let Some(warnings) = warnings {
+            return vec![NULL, warnings.into()];
+        } else {
+        return vec![false.into(), NULL];
+        }
+    }
 
     let popped = interpreter.ctx.pop_ref();
     let popped = interpreter.ctx.store.resolve(popped);
