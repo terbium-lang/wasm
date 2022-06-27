@@ -50,6 +50,7 @@ where
     let messages = run_analysis(&analyzers, ctx)?;
 
     let mut should_return = false;
+
     let count = messages.len();
     let mut info_count = 0;
     let mut warning_count = 0;
