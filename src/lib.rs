@@ -34,7 +34,7 @@ where
         return Err(String::from_utf8_lossy(&err).into_owned());
     }
     // SAFETY: `res` is not Err because is already checked
-    Ok(unsafe { res.unwrap_unchecked() })
+    Ok(unsafe { res.unwrap() })
 }
 
 fn analyze<T>(code: &str) -> Result<(T, Option<String>), String>
@@ -98,7 +98,7 @@ where
     if should_return {
         // SAFETY: `should_return` is only `true` if there is an error,
         // that mean there has to be at least one item.
-        return Err(unsafe { result.unwrap_unchecked() });
+        return Err(unsafe { result.unwrap() });
     }
 
     if tokens.is_empty() {
@@ -106,7 +106,7 @@ where
     }
 
     // SAFETY: Analyzer already checked for us so is safe to unwrap.
-    Ok((unsafe { T::parse(tokens).unwrap_unchecked() }, result))
+    Ok((unsafe { T::parse(tokens).unwrap() }, result))
 }
 
 fn program(body: AstBody) -> BcProgram {
@@ -128,7 +128,7 @@ pub fn ast(content: &str) -> Vec<JsValue> {
     }
 
     // SAFETY: `node` is not Err because is already checked.
-    let (node, warnings) = unsafe { result.unwrap_unchecked() };
+    let (node, warnings) = unsafe { result.unwrap() };
 
     vec![
         format!("{:#?}", node).into(),
@@ -149,7 +149,7 @@ pub fn dis(code: &str) -> Vec<JsValue> {
     }
 
     // SAFETY: `node` is not Err because is already checked.
-    let (body, warnings) = unsafe { result.unwrap_unchecked() };
+    let (body, warnings) = unsafe { result.unwrap() };
 
     let program = program(body);
 
@@ -177,7 +177,7 @@ pub fn interpret(code: &str) -> Vec<JsValue> {
     }
 
     // SAFETY: `node` is not Err because is already checked.
-    let (body, warnings) = unsafe { result.unwrap_unchecked() };
+    let (body, warnings) = unsafe { result.unwrap() };
 
     let program = program(body);
 
