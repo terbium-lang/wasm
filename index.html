@@ -76,14 +76,13 @@
       #area {
         display: flex;
         width: min(1200px, 90vw);
-        margin: 6px;
-        margin-bottom: 6px;
+        margin: 12px 6px;
         height: calc(90vh - 176px);
+        flex-direction: column;
       }
     
       #editor { 
-        width: min(70vw, 721px);
-        height: 100%;
+        flex-grow: 1;
         border-radius: 4px;
         font-size: 14px;
       }
@@ -102,10 +101,11 @@
       }
       
       #output {
-        padding: 0 16px;
+        padding: 16px;
         overflow: auto;
         color: #ffffff;
         font-family: 'JetBrains Mono', monospace !important;
+        height: 40%;
       }
       
       #output a {
@@ -219,7 +219,7 @@
 
                 if (result !== null) {
                   if (error !== null) {
-                    output.innerHTML += filter.toHtml(escapeHtml(error));
+                    output.innerHTML += filter.toHtml(escapeHtml(error)).replace(/(<\/span>|<br *\/>)( +?)(<span)/gm, '$1<span>$2</span>$3');
                   }
                   
                   if (result === false) {
@@ -231,7 +231,7 @@
                   output.innerHTML = `<code>${result}</code>`;
                 } else {
                   if (error !== null) {
-                    output.innerHTML = filter.toHtml(escapeHtml(error));
+                    output.innerHTML = filter.toHtml(escapeHtml(error)).replace(/(<\/span>|<br *\/>)( +?)(<span)/gm, '$1<span>$2</span>$3');
                   }
                 }
             } catch (error) {
