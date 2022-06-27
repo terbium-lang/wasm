@@ -201,7 +201,7 @@
             15: '#FFF'
         }});
 
-        const r = /https:\/\/github.com\/TerbiumLang\/standard\/blob\/main\/error_index\.md#([EWew]\d+)(?![\s\S]*https:\/\/github.com\/TerbiumLang\/standard\/blob\/main\/error_index\.md#[EWew]\d+)/g;
+        const r = /(view this error in the error index: )(https:\/\/github.com\/TerbiumLang\/standard\/blob\/main\/error_index\.md#([EWew]\d+))/g;
         
         function escapeHtml(unsafe) {
             return unsafe
@@ -210,7 +210,7 @@
                  .replace(/>/g, "&gt;")
                  .replace(/"/g, "&quot;")
                  .replace(/'/g, "&#039;")
-                 .replace(r, '<a class="errindex" href="$&">Click to view $1</a>');
+                 .replace(r, '$1<a class="errindex" href="$2">Click to view $3</a>');
          }
         
         const handle_error = (f, ...args) => {
