@@ -157,7 +157,7 @@
     </div>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.5.3/ace.js" type="text/javascript" charset="utf-8"></script>
-    <script src="https://cdn.jsdelivr.net/npm/ansi-html@0.0.9/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ansi-to-html@0.7.2/lib/ansi_to_html.min.js"></script>
     <script type="module">
       import init, { ast, dis, interpret } from './terbium_playground.js';
       
@@ -177,6 +177,7 @@
         const disC = document.getElementById('dis');
         const intrC = document.getElementById('intr');
         const output = document.getElementById('output');
+        const filter = new Filter({newline: true});
 
         function escapeHtml(unsafe) {
             return unsafe
@@ -195,7 +196,7 @@
                   output.innerHTML = `<code>${result}</code>`;
                 }
                 if (error !== null) {
-                  output.innerHTML = ansiHTML(escapeHtml(error));
+                  output.innerHTML = filter.toHtml(escapeHtml(error));
                 }
             } catch (error) {
                 output.innerHTML = `<code>${error.message}</code>`;
